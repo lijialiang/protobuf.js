@@ -42,16 +42,16 @@ Namespace.fromJSON = function fromJSON(name, json) {
  * @param {IToJSONOptions} [toJSONOptions] JSON conversion options
  * @returns {Object.<string,*>|undefined} JSON object or `undefined` when array is empty
  */
-function arrayToJSON(array, toJSONOptions) {
-    if (!(array && array.length))
-        return undefined;
-    var obj = {};
-    for (var i = 0; i < array.length; ++i)
-        obj[array[i].name] = array[i].toJSON(toJSONOptions);
-    return obj;
-}
+// function arrayToJSON(array, toJSONOptions) {
+//     if (!(array && array.length))
+//         return undefined;
+//     var obj = {};
+//     for (var i = 0; i < array.length; ++i)
+//         obj[array[i].name] = array[i].toJSON(toJSONOptions);
+//     return obj;
+// }
 
-Namespace.arrayToJSON = arrayToJSON;
+// Namespace.arrayToJSON = arrayToJSON;
 
 /**
  * Tests if the specified id is reserved.
@@ -151,12 +151,12 @@ Object.defineProperty(Namespace.prototype, "nestedArray", {
  * @param {IToJSONOptions} [toJSONOptions] JSON conversion options
  * @returns {INamespace} Namespace descriptor
  */
-Namespace.prototype.toJSON = function toJSON(toJSONOptions) {
-    return util.toObject([
-        "options" , this.options,
-        "nested"  , arrayToJSON(this.nestedArray, toJSONOptions)
-    ]);
-};
+// Namespace.prototype.toJSON = function toJSON(toJSONOptions) {
+//     return util.toObject([
+//         "options" , this.options,
+//         "nested"  , arrayToJSON(this.nestedArray, toJSONOptions)
+//     ]);
+// };
 
 /**
  * Adds nested objects to this namespace from nested object descriptors.
@@ -202,11 +202,11 @@ Namespace.prototype.get = function get(name) {
  * @returns {Object.<string,number>} Enum values
  * @throws {Error} If there is no such enum
  */
-Namespace.prototype.getEnum = function getEnum(name) {
-    if (this.nested && this.nested[name] instanceof Enum)
-        return this.nested[name].values;
-    throw Error("no such enum: " + name);
-};
+// Namespace.prototype.getEnum = function getEnum(name) {
+//     if (this.nested && this.nested[name] instanceof Enum)
+//         return this.nested[name].values;
+//     throw Error("no such enum: " + name);
+// };
 
 /**
  * Adds a nested object to this namespace.
@@ -251,20 +251,20 @@ Namespace.prototype.add = function add(object) {
  * @throws {TypeError} If arguments are invalid
  * @throws {Error} If `object` is not a member of this namespace
  */
-Namespace.prototype.remove = function remove(object) {
+// Namespace.prototype.remove = function remove(object) {
 
-    if (!(object instanceof ReflectionObject))
-        throw TypeError("object must be a ReflectionObject");
-    if (object.parent !== this)
-        throw Error(object + " is not a member of " + this);
+//     if (!(object instanceof ReflectionObject))
+//         throw TypeError("object must be a ReflectionObject");
+//     if (object.parent !== this)
+//         throw Error(object + " is not a member of " + this);
 
-    delete this.nested[object.name];
-    if (!Object.keys(this.nested).length)
-        this.nested = undefined;
+//     delete this.nested[object.name];
+//     if (!Object.keys(this.nested).length)
+//         this.nested = undefined;
 
-    object.onRemove(this);
-    return clearCache(this);
-};
+//     object.onRemove(this);
+//     return clearCache(this);
+// };
 
 /**
  * Defines additial namespaces within this one if not yet existing.
@@ -272,43 +272,43 @@ Namespace.prototype.remove = function remove(object) {
  * @param {*} [json] Nested types to create from JSON
  * @returns {Namespace} Pointer to the last namespace created or `this` if path is empty
  */
-Namespace.prototype.define = function define(path, json) {
+// Namespace.prototype.define = function define(path, json) {
 
-    if (util.isString(path))
-        path = path.split(".");
-    else if (!Array.isArray(path))
-        throw TypeError("illegal path");
-    if (path && path.length && path[0] === "")
-        throw Error("path must be relative");
+//     if (util.isString(path))
+//         path = path.split(".");
+//     else if (!Array.isArray(path))
+//         throw TypeError("illegal path");
+//     if (path && path.length && path[0] === "")
+//         throw Error("path must be relative");
 
-    var ptr = this;
-    while (path.length > 0) {
-        var part = path.shift();
-        if (ptr.nested && ptr.nested[part]) {
-            ptr = ptr.nested[part];
-            if (!(ptr instanceof Namespace))
-                throw Error("path conflicts with non-namespace objects");
-        } else
-            ptr.add(ptr = new Namespace(part));
-    }
-    if (json)
-        ptr.addJSON(json);
-    return ptr;
-};
+//     var ptr = this;
+//     while (path.length > 0) {
+//         var part = path.shift();
+//         if (ptr.nested && ptr.nested[part]) {
+//             ptr = ptr.nested[part];
+//             if (!(ptr instanceof Namespace))
+//                 throw Error("path conflicts with non-namespace objects");
+//         } else
+//             ptr.add(ptr = new Namespace(part));
+//     }
+//     if (json)
+//         ptr.addJSON(json);
+//     return ptr;
+// };
 
 /**
  * Resolves this namespace's and all its nested objects' type references. Useful to validate a reflection tree, but comes at a cost.
  * @returns {Namespace} `this`
  */
-Namespace.prototype.resolveAll = function resolveAll() {
-    var nested = this.nestedArray, i = 0;
-    while (i < nested.length)
-        if (nested[i] instanceof Namespace)
-            nested[i++].resolveAll();
-        else
-            nested[i++].resolve();
-    return this.resolve();
-};
+// Namespace.prototype.resolveAll = function resolveAll() {
+//     var nested = this.nestedArray, i = 0;
+//     while (i < nested.length)
+//         if (nested[i] instanceof Namespace)
+//             nested[i++].resolveAll();
+//         else
+//             nested[i++].resolve();
+//     return this.resolve();
+// };
 
 /**
  * Recursively looks up the reflection object matching the specified path in the scope of this namespace.
@@ -390,12 +390,12 @@ Namespace.prototype.lookupType = function lookupType(path) {
  * @returns {Enum} Looked up enum
  * @throws {Error} If `path` does not point to an enum
  */
-Namespace.prototype.lookupEnum = function lookupEnum(path) {
-    var found = this.lookup(path, [ Enum ]);
-    if (!found)
-        throw Error("no such Enum '" + path + "' in " + this);
-    return found;
-};
+// Namespace.prototype.lookupEnum = function lookupEnum(path) {
+//     var found = this.lookup(path, [ Enum ]);
+//     if (!found)
+//         throw Error("no such Enum '" + path + "' in " + this);
+//     return found;
+// };
 
 /**
  * Looks up the {@link Type|type} or {@link Enum|enum} at the specified path, relative to this namespace.
@@ -418,12 +418,12 @@ Namespace.prototype.lookupTypeOrEnum = function lookupTypeOrEnum(path) {
  * @returns {Service} Looked up service
  * @throws {Error} If `path` does not point to a service
  */
-Namespace.prototype.lookupService = function lookupService(path) {
-    var found = this.lookup(path, [ Service ]);
-    if (!found)
-        throw Error("no such Service '" + path + "' in " + this);
-    return found;
-};
+// Namespace.prototype.lookupService = function lookupService(path) {
+//     var found = this.lookup(path, [ Service ]);
+//     if (!found)
+//         throw Error("no such Service '" + path + "' in " + this);
+//     return found;
+// };
 
 // Sets up cyclic dependencies (called in index-light)
 Namespace._configure = function(Type_, Service_, Enum_) {

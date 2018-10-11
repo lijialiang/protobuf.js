@@ -20,14 +20,14 @@ protobuf.build = "light";
  * @returns {undefined}
  * @see {@link Root#load}
  */
-function load(filename, root, callback) {
-    if (typeof root === "function") {
-        callback = root;
-        root = new protobuf.Root();
-    } else if (!root)
-        root = new protobuf.Root();
-    return root.load(filename, callback);
-}
+// function load(filename, root, callback) {
+//     if (typeof root === "function") {
+//         callback = root;
+//         root = new protobuf.Root();
+//     } else if (!root)
+//         root = new protobuf.Root();
+//     return root.load(filename, callback);
+// }
 
 /**
  * Loads one or multiple .proto or preprocessed .json files into a common root namespace and calls the callback.
@@ -53,7 +53,7 @@ function load(filename, root, callback) {
  */
 // function load(filename:string, [root:Root]):Promise<Root>
 
-protobuf.load = load;
+// protobuf.load = load;
 
 /**
  * Synchronously loads one or multiple .proto or preprocessed .json files into a common root namespace (node only).
@@ -63,19 +63,19 @@ protobuf.load = load;
  * @throws {Error} If synchronous fetching is not supported (i.e. in browsers) or if a file's syntax is invalid
  * @see {@link Root#loadSync}
  */
-function loadSync(filename, root) {
-    if (!root)
-        root = new protobuf.Root();
-    return root.loadSync(filename);
-}
+// function loadSync(filename, root) {
+//     if (!root)
+//         root = new protobuf.Root();
+//     return root.loadSync(filename);
+// }
 
-protobuf.loadSync = loadSync;
+// protobuf.loadSync = loadSync;
 
 // Serialization
-protobuf.encoder          = require("./encoder");
-protobuf.decoder          = require("./decoder");
-protobuf.verifier         = require("./verifier");
-protobuf.converter        = require("./converter");
+// protobuf.encoder          = require("./encoder");
+// protobuf.decoder          = require("./decoder");
+// protobuf.verifier         = require("./verifier");
+// protobuf.converter        = require("./converter");
 
 // Reflection
 protobuf.ReflectionObject = require("./object");
@@ -84,18 +84,19 @@ protobuf.Root             = require("./root");
 protobuf.Enum             = require("./enum");
 protobuf.Type             = require("./type");
 protobuf.Field            = require("./field");
-protobuf.OneOf            = require("./oneof");
-protobuf.MapField         = require("./mapfield");
 protobuf.Service          = require("./service");
-protobuf.Method           = require("./method");
 
+
+// protobuf.OneOf            = require("./oneof");
+// protobuf.MapField         = require("./mapfield");
+// protobuf.Method           = require("./method");
 // Runtime
-protobuf.Message          = require("./message");
-protobuf.wrappers         = require("./wrappers");
+// protobuf.Message          = require("./message");
+// protobuf.wrappers         = require("./wrappers");
 
 // Utility
-protobuf.types            = require("./types");
-protobuf.util             = require("./util");
+// protobuf.types            = require("./types");
+// protobuf.util             = require("./util");
 
 // Set up possibly cyclic reflection dependencies
 protobuf.ReflectionObject._configure(protobuf.Root);

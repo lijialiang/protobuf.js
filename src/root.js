@@ -7,8 +7,9 @@ var Namespace = require("./namespace");
 
 var Field   = require("./field"),
     Enum    = require("./enum"),
-    OneOf   = require("./oneof"),
-    util    = require("./util");
+    OneOf   = require("./oneof")
+    // util    = require("./util")
+    ;
 
 var Type,   // cyclic
     parse,  // might be excluded
@@ -59,7 +60,7 @@ Root.fromJSON = function fromJSON(json, root) {
  * @param {string} target The file name being imported
  * @returns {string|null} Resolved path to `target` or `null` to skip the file
  */
-Root.prototype.resolvePath = util.path.resolve;
+// Root.prototype.resolvePath = util.path.resolve;
 
 // A symbol-like function to safely signal synchronous loading
 /* istanbul ignore next */
@@ -72,133 +73,133 @@ function SYNC() {} // eslint-disable-line no-empty-function
  * @param {LoadCallback} callback Callback function
  * @returns {undefined}
  */
-Root.prototype.load = function load(filename, options, callback) {
-    if (typeof options === "function") {
-        callback = options;
-        options = undefined;
-    }
-    var self = this;
-    if (!callback)
-        return util.asPromise(load, self, filename, options);
+// Root.prototype.load = function load(filename, options, callback) {
+//     if (typeof options === "function") {
+//         callback = options;
+//         options = undefined;
+//     }
+//     var self = this;
+//     if (!callback)
+//         return util.asPromise(load, self, filename, options);
 
-    var sync = callback === SYNC; // undocumented
+//     var sync = callback === SYNC; // undocumented
 
-    // Finishes loading by calling the callback (exactly once)
-    function finish(err, root) {
-        /* istanbul ignore if */
-        if (!callback)
-            return;
-        var cb = callback;
-        callback = null;
-        if (sync)
-            throw err;
-        cb(err, root);
-    }
+//     // Finishes loading by calling the callback (exactly once)
+//     function finish(err, root) {
+//         /* istanbul ignore if */
+//         if (!callback)
+//             return;
+//         var cb = callback;
+//         callback = null;
+//         if (sync)
+//             throw err;
+//         cb(err, root);
+//     }
 
-    // Processes a single file
-    function process(filename, source) {
-        try {
-            if (util.isString(source) && source.charAt(0) === "{")
-                source = JSON.parse(source);
-            if (!util.isString(source))
-                self.setOptions(source.options).addJSON(source.nested);
-            else {
-                parse.filename = filename;
-                var parsed = parse(source, self, options),
-                    resolved,
-                    i = 0;
-                if (parsed.imports)
-                    for (; i < parsed.imports.length; ++i)
-                        if (resolved = self.resolvePath(filename, parsed.imports[i]))
-                            fetch(resolved);
-                if (parsed.weakImports)
-                    for (i = 0; i < parsed.weakImports.length; ++i)
-                        if (resolved = self.resolvePath(filename, parsed.weakImports[i]))
-                            fetch(resolved, true);
-            }
-        } catch (err) {
-            finish(err);
-        }
-        if (!sync && !queued)
-            finish(null, self); // only once anyway
-    }
+//     // Processes a single file
+//     function process(filename, source) {
+//         try {
+//             if (util.isString(source) && source.charAt(0) === "{")
+//                 source = JSON.parse(source);
+//             if (!util.isString(source))
+//                 self.setOptions(source.options).addJSON(source.nested);
+//             else {
+//                 parse.filename = filename;
+//                 var parsed = parse(source, self, options),
+//                     resolved,
+//                     i = 0;
+//                 if (parsed.imports)
+//                     for (; i < parsed.imports.length; ++i)
+//                         if (resolved = self.resolvePath(filename, parsed.imports[i]))
+//                             fetch(resolved);
+//                 if (parsed.weakImports)
+//                     for (i = 0; i < parsed.weakImports.length; ++i)
+//                         if (resolved = self.resolvePath(filename, parsed.weakImports[i]))
+//                             fetch(resolved, true);
+//             }
+//         } catch (err) {
+//             finish(err);
+//         }
+//         if (!sync && !queued)
+//             finish(null, self); // only once anyway
+//     }
 
-    // Fetches a single file
-    function fetch(filename, weak) {
+//     // Fetches a single file
+//     function fetch(filename, weak) {
 
-        // Strip path if this file references a bundled definition
-        var idx = filename.lastIndexOf("google/protobuf/");
-        if (idx > -1) {
-            var altname = filename.substring(idx);
-            if (altname in common)
-                filename = altname;
-        }
+//         // Strip path if this file references a bundled definition
+//         var idx = filename.lastIndexOf("google/protobuf/");
+//         if (idx > -1) {
+//             var altname = filename.substring(idx);
+//             if (altname in common)
+//                 filename = altname;
+//         }
 
-        // Skip if already loaded / attempted
-        if (self.files.indexOf(filename) > -1)
-            return;
-        self.files.push(filename);
+//         // Skip if already loaded / attempted
+//         if (self.files.indexOf(filename) > -1)
+//             return;
+//         self.files.push(filename);
 
-        // Shortcut bundled definitions
-        if (filename in common) {
-            if (sync)
-                process(filename, common[filename]);
-            else {
-                ++queued;
-                setTimeout(function() {
-                    --queued;
-                    process(filename, common[filename]);
-                });
-            }
-            return;
-        }
+//         // Shortcut bundled definitions
+//         if (filename in common) {
+//             if (sync)
+//                 process(filename, common[filename]);
+//             else {
+//                 ++queued;
+//                 setTimeout(function() {
+//                     --queued;
+//                     process(filename, common[filename]);
+//                 });
+//             }
+//             return;
+//         }
 
-        // Otherwise fetch from disk or network
-        if (sync) {
-            var source;
-            try {
-                source = util.fs.readFileSync(filename).toString("utf8");
-            } catch (err) {
-                if (!weak)
-                    finish(err);
-                return;
-            }
-            process(filename, source);
-        } else {
-            ++queued;
-            util.fetch(filename, function(err, source) {
-                --queued;
-                /* istanbul ignore if */
-                if (!callback)
-                    return; // terminated meanwhile
-                if (err) {
-                    /* istanbul ignore else */
-                    if (!weak)
-                        finish(err);
-                    else if (!queued) // can't be covered reliably
-                        finish(null, self);
-                    return;
-                }
-                process(filename, source);
-            });
-        }
-    }
-    var queued = 0;
+//         // Otherwise fetch from disk or network
+//         if (sync) {
+//             var source;
+//             try {
+//                 source = util.fs.readFileSync(filename).toString("utf8");
+//             } catch (err) {
+//                 if (!weak)
+//                     finish(err);
+//                 return;
+//             }
+//             process(filename, source);
+//         } else {
+//             ++queued;
+//             util.fetch(filename, function(err, source) {
+//                 --queued;
+//                 /* istanbul ignore if */
+//                 if (!callback)
+//                     return; // terminated meanwhile
+//                 if (err) {
+//                     /* istanbul ignore else */
+//                     if (!weak)
+//                         finish(err);
+//                     else if (!queued) // can't be covered reliably
+//                         finish(null, self);
+//                     return;
+//                 }
+//                 process(filename, source);
+//             });
+//         }
+//     }
+//     var queued = 0;
 
-    // Assembling the root namespace doesn't require working type
-    // references anymore, so we can load everything in parallel
-    if (util.isString(filename))
-        filename = [ filename ];
-    for (var i = 0, resolved; i < filename.length; ++i)
-        if (resolved = self.resolvePath("", filename[i]))
-            fetch(resolved);
+//     // Assembling the root namespace doesn't require working type
+//     // references anymore, so we can load everything in parallel
+//     if (util.isString(filename))
+//         filename = [ filename ];
+//     for (var i = 0, resolved; i < filename.length; ++i)
+//         if (resolved = self.resolvePath("", filename[i]))
+//             fetch(resolved);
 
-    if (sync)
-        return self;
-    if (!queued)
-        finish(null, self);
-    return undefined;
-};
+//     if (sync)
+//         return self;
+//     if (!queued)
+//         finish(null, self);
+//     return undefined;
+// };
 // function load(filename:string, options:IParseOptions, callback:LoadCallback):undefined
 
 /**
@@ -229,22 +230,22 @@ Root.prototype.load = function load(filename, options, callback) {
  * @returns {Root} Root namespace
  * @throws {Error} If synchronous fetching is not supported (i.e. in browsers) or if a file's syntax is invalid
  */
-Root.prototype.loadSync = function loadSync(filename, options) {
-    if (!util.isNode)
-        throw Error("not supported");
-    return this.load(filename, options, SYNC);
-};
+// Root.prototype.loadSync = function loadSync(filename, options) {
+//     if (!util.isNode)
+//         throw Error("not supported");
+//     return this.load(filename, options, SYNC);
+// };
 
 /**
  * @override
  */
-Root.prototype.resolveAll = function resolveAll() {
-    if (this.deferred.length)
-        throw Error("unresolvable extensions: " + this.deferred.map(function(field) {
-            return "'extend " + field.extend + "' in " + field.parent.fullName;
-        }).join(", "));
-    return Namespace.prototype.resolveAll.call(this);
-};
+// Root.prototype.resolveAll = function resolveAll() {
+//     if (this.deferred.length)
+//         throw Error("unresolvable extensions: " + this.deferred.map(function(field) {
+//             return "'extend " + field.extend + "' in " + field.parent.fullName;
+//         }).join(", "));
+//     return Namespace.prototype.resolveAll.call(this);
+// };
 
 // only uppercased (and thus conflict-free) children are exposed, see below
 var exposeRe = /^[A-Z]/;
@@ -312,36 +313,36 @@ Root.prototype._handleAdd = function _handleAdd(object) {
  * @returns {undefined}
  * @private
  */
-Root.prototype._handleRemove = function _handleRemove(object) {
-    if (object instanceof Field) {
+// Root.prototype._handleRemove = function _handleRemove(object) {
+//     if (object instanceof Field) {
 
-        if (/* an extension field */ object.extend !== undefined) {
-            if (/* already handled */ object.extensionField) { // remove its sister field
-                object.extensionField.parent.remove(object.extensionField);
-                object.extensionField = null;
-            } else { // cancel the extension
-                var index = this.deferred.indexOf(object);
-                /* istanbul ignore else */
-                if (index > -1)
-                    this.deferred.splice(index, 1);
-            }
-        }
+//         if (/* an extension field */ object.extend !== undefined) {
+//             if (/* already handled */ object.extensionField) { // remove its sister field
+//                 object.extensionField.parent.remove(object.extensionField);
+//                 object.extensionField = null;
+//             } else { // cancel the extension
+//                 var index = this.deferred.indexOf(object);
+//                 /* istanbul ignore else */
+//                 if (index > -1)
+//                     this.deferred.splice(index, 1);
+//             }
+//         }
 
-    } else if (object instanceof Enum) {
+//     } else if (object instanceof Enum) {
 
-        if (exposeRe.test(object.name))
-            delete object.parent[object.name]; // unexpose enum values
+//         if (exposeRe.test(object.name))
+//             delete object.parent[object.name]; // unexpose enum values
 
-    } else if (object instanceof Namespace) {
+//     } else if (object instanceof Namespace) {
 
-        for (var i = 0; i < /* initializes */ object.nestedArray.length; ++i) // recurse into the namespace
-            this._handleRemove(object._nestedArray[i]);
+//         for (var i = 0; i < /* initializes */ object.nestedArray.length; ++i) // recurse into the namespace
+//             this._handleRemove(object._nestedArray[i]);
 
-        if (exposeRe.test(object.name))
-            delete object.parent[object.name]; // unexpose namespaces
+//         if (exposeRe.test(object.name))
+//             delete object.parent[object.name]; // unexpose namespaces
 
-    }
-};
+//     }
+// };
 
 // Sets up cyclic dependencies (called in index-light)
 Root._configure = function(Type_, parse_, common_) {

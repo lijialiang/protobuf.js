@@ -5,8 +5,8 @@ module.exports = Enum;
 var ReflectionObject = require("./object");
 ((Enum.prototype = Object.create(ReflectionObject.prototype)).constructor = Enum).className = "Enum";
 
-var Namespace = require("./namespace"),
-    util = require("./util");
+// var Namespace = require("./namespace"),
+//     util = require("./util");
 
 /**
  * Constructs a new enum instance.
@@ -90,16 +90,16 @@ Enum.fromJSON = function fromJSON(name, json) {
  * @param {IToJSONOptions} [toJSONOptions] JSON conversion options
  * @returns {IEnum} Enum descriptor
  */
-Enum.prototype.toJSON = function toJSON(toJSONOptions) {
-    var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
-    return util.toObject([
-        "options"  , this.options,
-        "values"   , this.values,
-        "reserved" , this.reserved && this.reserved.length ? this.reserved : undefined,
-        "comment"  , keepComments ? this.comment : undefined,
-        "comments" , keepComments ? this.comments : undefined
-    ]);
-};
+// Enum.prototype.toJSON = function toJSON(toJSONOptions) {
+//     var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
+//     return util.toObject([
+//         "options"  , this.options,
+//         "values"   , this.values,
+//         "reserved" , this.reserved && this.reserved.length ? this.reserved : undefined,
+//         "comment"  , keepComments ? this.comment : undefined,
+//         "comments" , keepComments ? this.comments : undefined
+//     ]);
+// };
 
 /**
  * Adds a value to this enum.
@@ -110,34 +110,34 @@ Enum.prototype.toJSON = function toJSON(toJSONOptions) {
  * @throws {TypeError} If arguments are invalid
  * @throws {Error} If there is already a value with this name or id
  */
-Enum.prototype.add = function add(name, id, comment) {
-    // utilized by the parser but not by .fromJSON
+// Enum.prototype.add = function add(name, id, comment) {
+//     // utilized by the parser but not by .fromJSON
 
-    if (!util.isString(name))
-        throw TypeError("name must be a string");
+//     if (!util.isString(name))
+//         throw TypeError("name must be a string");
 
-    if (!util.isInteger(id))
-        throw TypeError("id must be an integer");
+//     if (!util.isInteger(id))
+//         throw TypeError("id must be an integer");
 
-    if (this.values[name] !== undefined)
-        throw Error("duplicate name '" + name + "' in " + this);
+//     if (this.values[name] !== undefined)
+//         throw Error("duplicate name '" + name + "' in " + this);
 
-    if (this.isReservedId(id))
-        throw Error("id " + id + " is reserved in " + this);
+//     if (this.isReservedId(id))
+//         throw Error("id " + id + " is reserved in " + this);
 
-    if (this.isReservedName(name))
-        throw Error("name '" + name + "' is reserved in " + this);
+//     if (this.isReservedName(name))
+//         throw Error("name '" + name + "' is reserved in " + this);
 
-    if (this.valuesById[id] !== undefined) {
-        if (!(this.options && this.options.allow_alias))
-            throw Error("duplicate id " + id + " in " + this);
-        this.values[name] = id;
-    } else
-        this.valuesById[this.values[name] = id] = name;
+//     if (this.valuesById[id] !== undefined) {
+//         if (!(this.options && this.options.allow_alias))
+//             throw Error("duplicate id " + id + " in " + this);
+//         this.values[name] = id;
+//     } else
+//         this.valuesById[this.values[name] = id] = name;
 
-    this.comments[name] = comment || null;
-    return this;
-};
+//     this.comments[name] = comment || null;
+//     return this;
+// };
 
 /**
  * Removes a value from this enum
@@ -146,36 +146,36 @@ Enum.prototype.add = function add(name, id, comment) {
  * @throws {TypeError} If arguments are invalid
  * @throws {Error} If `name` is not a name of this enum
  */
-Enum.prototype.remove = function remove(name) {
+// Enum.prototype.remove = function remove(name) {
 
-    if (!util.isString(name))
-        throw TypeError("name must be a string");
+//     if (!util.isString(name))
+//         throw TypeError("name must be a string");
 
-    var val = this.values[name];
-    if (val == null)
-        throw Error("name '" + name + "' does not exist in " + this);
+//     var val = this.values[name];
+//     if (val == null)
+//         throw Error("name '" + name + "' does not exist in " + this);
 
-    delete this.valuesById[val];
-    delete this.values[name];
-    delete this.comments[name];
+//     delete this.valuesById[val];
+//     delete this.values[name];
+//     delete this.comments[name];
 
-    return this;
-};
+//     return this;
+// };
 
 /**
  * Tests if the specified id is reserved.
  * @param {number} id Id to test
  * @returns {boolean} `true` if reserved, otherwise `false`
  */
-Enum.prototype.isReservedId = function isReservedId(id) {
-    return Namespace.isReservedId(this.reserved, id);
-};
+// Enum.prototype.isReservedId = function isReservedId(id) {
+//     return Namespace.isReservedId(this.reserved, id);
+// };
 
 /**
  * Tests if the specified name is reserved.
  * @param {string} name Name to test
  * @returns {boolean} `true` if reserved, otherwise `false`
  */
-Enum.prototype.isReservedName = function isReservedName(name) {
-    return Namespace.isReservedName(this.reserved, name);
-};
+// Enum.prototype.isReservedName = function isReservedName(name) {
+//     return Namespace.isReservedName(this.reserved, name);
+// };

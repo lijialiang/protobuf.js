@@ -200,14 +200,14 @@ function Field(name, id, type, rule, extend, options, comment) {
  * @type {boolean}
  * @readonly
  */
-Object.defineProperty(Field.prototype, "packed", {
-    get: function() {
-        // defaults to packed=true if not explicity set to false
-        if (this._packed === null)
-            this._packed = this.getOption("packed") !== false;
-        return this._packed;
-    }
-});
+// Object.defineProperty(Field.prototype, "packed", {
+//     get: function() {
+//         // defaults to packed=true if not explicity set to false
+//         if (this._packed === null)
+//             this._packed = this.getOption("packed") !== false;
+//         return this._packed;
+//     }
+// });
 
 /**
  * @override
@@ -239,17 +239,17 @@ Field.prototype.setOption = function setOption(name, value, ifNotSet) {
  * @param {IToJSONOptions} [toJSONOptions] JSON conversion options
  * @returns {IField} Field descriptor
  */
-Field.prototype.toJSON = function toJSON(toJSONOptions) {
-    var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
-    return util.toObject([
-        "rule"    , this.rule !== "optional" && this.rule || undefined,
-        "type"    , this.type,
-        "id"      , this.id,
-        "extend"  , this.extend,
-        "options" , this.options,
-        "comment" , keepComments ? this.comment : undefined
-    ]);
-};
+// Field.prototype.toJSON = function toJSON(toJSONOptions) {
+//     var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
+//     return util.toObject([
+//         "rule"    , this.rule !== "optional" && this.rule || undefined,
+//         "type"    , this.type,
+//         "id"      , this.id,
+//         "extend"  , this.extend,
+//         "options" , this.options,
+//         "comment" , keepComments ? this.comment : undefined
+//     ]);
+// };
 
 /**
  * Resolves this field's type references.
@@ -336,21 +336,21 @@ Field.prototype.resolve = function resolve() {
  * @returns {FieldDecorator} Decorator function
  * @template T extends number | number[] | Long | Long[] | string | string[] | boolean | boolean[] | Uint8Array | Uint8Array[] | Buffer | Buffer[]
  */
-Field.d = function decorateField(fieldId, fieldType, fieldRule, defaultValue) {
+// Field.d = function decorateField(fieldId, fieldType, fieldRule, defaultValue) {
 
-    // submessage: decorate the submessage and use its name as the type
-    if (typeof fieldType === "function")
-        fieldType = util.decorateType(fieldType).name;
+//     // submessage: decorate the submessage and use its name as the type
+//     if (typeof fieldType === "function")
+//         fieldType = util.decorateType(fieldType).name;
 
-    // enum reference: create a reflected copy of the enum and keep reuseing it
-    else if (fieldType && typeof fieldType === "object")
-        fieldType = util.decorateEnum(fieldType).name;
+//     // enum reference: create a reflected copy of the enum and keep reuseing it
+//     else if (fieldType && typeof fieldType === "object")
+//         fieldType = util.decorateEnum(fieldType).name;
 
-    return function fieldDecorator(prototype, fieldName) {
-        util.decorateType(prototype.constructor)
-            .add(new Field(fieldName, fieldId, fieldType, fieldRule, { "default": defaultValue }));
-    };
-};
+//     return function fieldDecorator(prototype, fieldName) {
+//         util.decorateType(prototype.constructor)
+//             .add(new Field(fieldName, fieldId, fieldType, fieldRule, { "default": defaultValue }));
+//     };
+// };
 
 /**
  * Field decorator (TypeScript).

@@ -6,19 +6,20 @@ var Namespace = require("./namespace");
 ((Type.prototype = Object.create(Namespace.prototype)).constructor = Type).className = "Type";
 
 var Enum      = require("./enum"),
-    OneOf     = require("./oneof"),
+    // OneOf     = require("./oneof"),
     Field     = require("./field"),
     MapField  = require("./mapfield"),
     Service   = require("./service"),
-    Message   = require("./message"),
+    // Message   = require("./message"),
     Reader    = require("./reader"),
-    Writer    = require("./writer"),
+    // Writer    = require("./writer"),
     util      = require("./util"),
-    encoder   = require("./encoder"),
-    decoder   = require("./decoder"),
-    verifier  = require("./verifier"),
-    converter = require("./converter"),
-    wrappers  = require("./wrappers");
+    // encoder   = require("./encoder"),
+    decoder   = require("./decoder")
+    // verifier  = require("./verifier"),
+    // converter = require("./converter"),
+    // wrappers  = require("./wrappers")
+    ;
 
 /**
  * Constructs a new reflected message type instance.
@@ -158,16 +159,16 @@ Object.defineProperties(Type.prototype, {
 
             // Ensure proper prototype
             var prototype = ctor.prototype;
-            if (!(prototype instanceof Message)) {
-                (ctor.prototype = new Message()).constructor = ctor;
-                util.merge(ctor.prototype, prototype);
-            }
+            // if (!(prototype instanceof Message)) {
+            //     (ctor.prototype = new Message()).constructor = ctor;
+            //     util.merge(ctor.prototype, prototype);
+            // }
 
             // Classes and messages reference their reflected type
             ctor.$type = ctor.prototype.$type = this;
 
             // Mix in static methods
-            util.merge(ctor, Message, true);
+            // util.merge(ctor, Message, true);
 
             this._ctor = ctor;
 
@@ -246,9 +247,9 @@ Type.fromJSON = function fromJSON(name, json) {
             ? MapField.fromJSON
             : Field.fromJSON )(names[i], json.fields[names[i]])
         );
-    if (json.oneofs)
-        for (names = Object.keys(json.oneofs), i = 0; i < names.length; ++i)
-            type.add(OneOf.fromJSON(names[i], json.oneofs[names[i]]));
+    // if (json.oneofs)
+    //     for (names = Object.keys(json.oneofs), i = 0; i < names.length; ++i)
+    //         type.add(OneOf.fromJSON(names[i], json.oneofs[names[i]]));
     if (json.nested)
         for (names = Object.keys(json.nested), i = 0; i < names.length; ++i) {
             var nested = json.nested[names[i]];
@@ -280,43 +281,43 @@ Type.fromJSON = function fromJSON(name, json) {
  * @param {IToJSONOptions} [toJSONOptions] JSON conversion options
  * @returns {IType} Message type descriptor
  */
-Type.prototype.toJSON = function toJSON(toJSONOptions) {
-    var inherited = Namespace.prototype.toJSON.call(this, toJSONOptions);
-    var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
-    return util.toObject([
-        "options"    , inherited && inherited.options || undefined,
-        "oneofs"     , Namespace.arrayToJSON(this.oneofsArray, toJSONOptions),
-        "fields"     , Namespace.arrayToJSON(this.fieldsArray.filter(function(obj) { return !obj.declaringField; }), toJSONOptions) || {},
-        "extensions" , this.extensions && this.extensions.length ? this.extensions : undefined,
-        "reserved"   , this.reserved && this.reserved.length ? this.reserved : undefined,
-        "group"      , this.group || undefined,
-        "nested"     , inherited && inherited.nested || undefined,
-        "comment"    , keepComments ? this.comment : undefined
-    ]);
-};
+// Type.prototype.toJSON = function toJSON(toJSONOptions) {
+//     var inherited = Namespace.prototype.toJSON.call(this, toJSONOptions);
+//     var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
+//     return util.toObject([
+//         "options"    , inherited && inherited.options || undefined,
+//         "oneofs"     , Namespace.arrayToJSON(this.oneofsArray, toJSONOptions),
+//         "fields"     , Namespace.arrayToJSON(this.fieldsArray.filter(function(obj) { return !obj.declaringField; }), toJSONOptions) || {},
+//         "extensions" , this.extensions && this.extensions.length ? this.extensions : undefined,
+//         "reserved"   , this.reserved && this.reserved.length ? this.reserved : undefined,
+//         "group"      , this.group || undefined,
+//         "nested"     , inherited && inherited.nested || undefined,
+//         "comment"    , keepComments ? this.comment : undefined
+//     ]);
+// };
 
 /**
  * @override
  */
-Type.prototype.resolveAll = function resolveAll() {
-    var fields = this.fieldsArray, i = 0;
-    while (i < fields.length)
-        fields[i++].resolve();
-    var oneofs = this.oneofsArray; i = 0;
-    while (i < oneofs.length)
-        oneofs[i++].resolve();
-    return Namespace.prototype.resolveAll.call(this);
-};
+// Type.prototype.resolveAll = function resolveAll() {
+//     var fields = this.fieldsArray, i = 0;
+//     while (i < fields.length)
+//         fields[i++].resolve();
+//     var oneofs = this.oneofsArray; i = 0;
+//     while (i < oneofs.length)
+//         oneofs[i++].resolve();
+//     return Namespace.prototype.resolveAll.call(this);
+// };
 
 /**
  * @override
  */
-Type.prototype.get = function get(name) {
-    return this.fields[name]
-        || this.oneofs && this.oneofs[name]
-        || this.nested && this.nested[name]
-        || null;
-};
+// Type.prototype.get = function get(name) {
+//     return this.fields[name]
+//         || this.oneofs && this.oneofs[name]
+//         || this.nested && this.nested[name]
+//         || null;
+// };
 
 /**
  * Adds a nested object to this type.
@@ -350,13 +351,13 @@ Type.prototype.add = function add(object) {
         object.onAdd(this);
         return clearCache(this);
     }
-    if (object instanceof OneOf) {
-        if (!this.oneofs)
-            this.oneofs = {};
-        this.oneofs[object.name] = object;
-        object.onAdd(this);
-        return clearCache(this);
-    }
+    // if (object instanceof OneOf) {
+    //     if (!this.oneofs)
+    //         this.oneofs = {};
+    //     this.oneofs[object.name] = object;
+    //     object.onAdd(this);
+    //     return clearCache(this);
+    // }
     return Namespace.prototype.add.call(this, object);
 };
 
@@ -367,32 +368,32 @@ Type.prototype.add = function add(object) {
  * @throws {TypeError} If arguments are invalid
  * @throws {Error} If `object` is not a member of this type
  */
-Type.prototype.remove = function remove(object) {
-    if (object instanceof Field && object.extend === undefined) {
-        // See Type#add for the reason why extension fields are excluded here.
+// Type.prototype.remove = function remove(object) {
+//     if (object instanceof Field && object.extend === undefined) {
+//         // See Type#add for the reason why extension fields are excluded here.
 
-        /* istanbul ignore if */
-        if (!this.fields || this.fields[object.name] !== object)
-            throw Error(object + " is not a member of " + this);
+//         /* istanbul ignore if */
+//         if (!this.fields || this.fields[object.name] !== object)
+//             throw Error(object + " is not a member of " + this);
 
-        delete this.fields[object.name];
-        object.parent = null;
-        object.onRemove(this);
-        return clearCache(this);
-    }
-    if (object instanceof OneOf) {
+//         delete this.fields[object.name];
+//         object.parent = null;
+//         object.onRemove(this);
+//         return clearCache(this);
+//     }
+//     if (object instanceof OneOf) {
 
-        /* istanbul ignore if */
-        if (!this.oneofs || this.oneofs[object.name] !== object)
-            throw Error(object + " is not a member of " + this);
+//         /* istanbul ignore if */
+//         if (!this.oneofs || this.oneofs[object.name] !== object)
+//             throw Error(object + " is not a member of " + this);
 
-        delete this.oneofs[object.name];
-        object.parent = null;
-        object.onRemove(this);
-        return clearCache(this);
-    }
-    return Namespace.prototype.remove.call(this, object);
-};
+//         delete this.oneofs[object.name];
+//         object.parent = null;
+//         object.onRemove(this);
+//         return clearCache(this);
+//     }
+//     return Namespace.prototype.remove.call(this, object);
+// };
 
 /**
  * Tests if the specified id is reserved.
@@ -417,9 +418,9 @@ Type.prototype.isReservedName = function isReservedName(name) {
  * @param {Object.<string,*>} [properties] Properties to set
  * @returns {Message<{}>} Message instance
  */
-Type.prototype.create = function create(properties) {
-    return new this.ctor(properties);
-};
+// Type.prototype.create = function create(properties) {
+//     return new this.ctor(properties);
+// };
 
 /**
  * Sets up {@link Type#encode|encode}, {@link Type#decode|decode} and {@link Type#verify|verify}.
@@ -435,42 +436,42 @@ Type.prototype.setup = function setup() {
         types.push(this._fieldsArray[i].resolve().resolvedType);
 
     // Replace setup methods with type-specific generated functions
-    this.encode = encoder(this)({
-        Writer : Writer,
-        types  : types,
-        util   : util
-    });
+    // this.encode = encoder(this)({
+    //     Writer : Writer,
+    //     types  : types,
+    //     util   : util
+    // });
     this.decode = decoder(this)({
         Reader : Reader,
         types  : types,
         util   : util
     });
-    this.verify = verifier(this)({
-        types : types,
-        util  : util
-    });
-    this.fromObject = converter.fromObject(this)({
-        types : types,
-        util  : util
-    });
-    this.toObject = converter.toObject(this)({
-        types : types,
-        util  : util
-    });
+    // this.verify = verifier(this)({
+    //     types : types,
+    //     util  : util
+    // });
+    // this.fromObject = converter.fromObject(this)({
+    //     types : types,
+    //     util  : util
+    // });
+    // this.toObject = converter.toObject(this)({
+    //     types : types,
+    //     util  : util
+    // });
 
     // Inject custom wrappers for common types
-    var wrapper = wrappers[fullName];
-    if (wrapper) {
-        var originalThis = Object.create(this);
-        // if (wrapper.fromObject) {
-            originalThis.fromObject = this.fromObject;
-            this.fromObject = wrapper.fromObject.bind(originalThis);
-        // }
-        // if (wrapper.toObject) {
-            originalThis.toObject = this.toObject;
-            this.toObject = wrapper.toObject.bind(originalThis);
-        // }
-    }
+    // var wrapper = wrappers[fullName];
+    // if (wrapper) {
+    //     var originalThis = Object.create(this);
+    //     // if (wrapper.fromObject) {
+    //         originalThis.fromObject = this.fromObject;
+    //         this.fromObject = wrapper.fromObject.bind(originalThis);
+    //     // }
+    //     // if (wrapper.toObject) {
+    //         originalThis.toObject = this.toObject;
+    //         this.toObject = wrapper.toObject.bind(originalThis);
+    //     // }
+    // }
 
     return this;
 };
@@ -481,9 +482,9 @@ Type.prototype.setup = function setup() {
  * @param {Writer} [writer] Writer to encode to
  * @returns {Writer} writer
  */
-Type.prototype.encode = function encode_setup(message, writer) {
-    return this.setup().encode(message, writer); // overrides this method
-};
+// Type.prototype.encode = function encode_setup(message, writer) {
+//     return this.setup().encode(message, writer); // overrides this method
+// };
 
 /**
  * Encodes a message of this type preceeded by its byte length as a varint. Does not implicitly {@link Type#verify|verify} messages.
@@ -491,9 +492,9 @@ Type.prototype.encode = function encode_setup(message, writer) {
  * @param {Writer} [writer] Writer to encode to
  * @returns {Writer} writer
  */
-Type.prototype.encodeDelimited = function encodeDelimited(message, writer) {
-    return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim();
-};
+// Type.prototype.encodeDelimited = function encodeDelimited(message, writer) {
+//     return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim();
+// };
 
 /**
  * Decodes a message of this type.
@@ -514,29 +515,29 @@ Type.prototype.decode = function decode_setup(reader, length) {
  * @throws {Error} If the payload is not a reader or valid buffer
  * @throws {util.ProtocolError} If required fields are missing
  */
-Type.prototype.decodeDelimited = function decodeDelimited(reader) {
-    if (!(reader instanceof Reader))
-        reader = Reader.create(reader);
-    return this.decode(reader, reader.uint32());
-};
+// Type.prototype.decodeDelimited = function decodeDelimited(reader) {
+//     if (!(reader instanceof Reader))
+//         reader = Reader.create(reader);
+//     return this.decode(reader, reader.uint32());
+// };
 
 /**
  * Verifies that field values are valid and that required fields are present.
  * @param {Object.<string,*>} message Plain object to verify
  * @returns {null|string} `null` if valid, otherwise the reason why it is not
  */
-Type.prototype.verify = function verify_setup(message) {
-    return this.setup().verify(message); // overrides this method
-};
+// Type.prototype.verify = function verify_setup(message) {
+//     return this.setup().verify(message); // overrides this method
+// };
 
 /**
  * Creates a new message of this type from a plain object. Also converts values to their respective internal types.
  * @param {Object.<string,*>} object Plain object to convert
  * @returns {Message<{}>} Message instance
  */
-Type.prototype.fromObject = function fromObject(object) {
-    return this.setup().fromObject(object);
-};
+// Type.prototype.fromObject = function fromObject(object) {
+//     return this.setup().fromObject(object);
+// };
 
 /**
  * Conversion options as used by {@link Type#toObject} and {@link Message.toObject}.
@@ -563,9 +564,9 @@ Type.prototype.fromObject = function fromObject(object) {
  * @param {IConversionOptions} [options] Conversion options
  * @returns {Object.<string,*>} Plain object
  */
-Type.prototype.toObject = function toObject(message, options) {
-    return this.setup().toObject(message, options);
-};
+// Type.prototype.toObject = function toObject(message, options) {
+//     return this.setup().toObject(message, options);
+// };
 
 /**
  * Decorator function as returned by {@link Type.d} (TypeScript).
@@ -582,8 +583,8 @@ Type.prototype.toObject = function toObject(message, options) {
  * @returns {TypeDecorator<T>} Decorator function
  * @template T extends Message<T>
  */
-Type.d = function decorateType(typeName) {
-    return function typeDecorator(target) {
-        util.decorateType(target, typeName);
-    };
-};
+// Type.d = function decorateType(typeName) {
+//     return function typeDecorator(target) {
+//         util.decorateType(target, typeName);
+//     };
+// };

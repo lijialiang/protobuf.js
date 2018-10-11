@@ -3,7 +3,7 @@ module.exports = ReflectionObject;
 
 ReflectionObject.className = "ReflectionObject";
 
-var util = require("./util");
+// var util = require("./util");
 
 var Root; // cyclic
 
@@ -17,11 +17,11 @@ var Root; // cyclic
  */
 function ReflectionObject(name, options) {
 
-    if (!util.isString(name))
-        throw TypeError("name must be a string");
+    // if (!util.isString(name))
+    //     throw TypeError("name must be a string");
 
-    if (options && !util.isObject(options))
-        throw TypeError("options must be an object");
+    // if (options && !util.isObject(options))
+    //     throw TypeError("options must be an object");
 
     /**
      * Options.
@@ -60,50 +60,50 @@ function ReflectionObject(name, options) {
     this.filename = null;
 }
 
-Object.defineProperties(ReflectionObject.prototype, {
+// Object.defineProperties(ReflectionObject.prototype, {
 
-    /**
-     * Reference to the root namespace.
-     * @name ReflectionObject#root
-     * @type {Root}
-     * @readonly
-     */
-    root: {
-        get: function() {
-            var ptr = this;
-            while (ptr.parent !== null)
-                ptr = ptr.parent;
-            return ptr;
-        }
-    },
+//     /**
+//      * Reference to the root namespace.
+//      * @name ReflectionObject#root
+//      * @type {Root}
+//      * @readonly
+//      */
+//     root: {
+//         get: function() {
+//             var ptr = this;
+//             while (ptr.parent !== null)
+//                 ptr = ptr.parent;
+//             return ptr;
+//         }
+//     },
 
-    /**
-     * Full name including leading dot.
-     * @name ReflectionObject#fullName
-     * @type {string}
-     * @readonly
-     */
-    fullName: {
-        get: function() {
-            var path = [ this.name ],
-                ptr = this.parent;
-            while (ptr) {
-                path.unshift(ptr.name);
-                ptr = ptr.parent;
-            }
-            return path.join(".");
-        }
-    }
-});
+//     /**
+//      * Full name including leading dot.
+//      * @name ReflectionObject#fullName
+//      * @type {string}
+//      * @readonly
+//      */
+//     fullName: {
+//         get: function() {
+//             var path = [ this.name ],
+//                 ptr = this.parent;
+//             while (ptr) {
+//                 path.unshift(ptr.name);
+//                 ptr = ptr.parent;
+//             }
+//             return path.join(".");
+//         }
+//     }
+// });
 
 /**
  * Converts this reflection object to its descriptor representation.
  * @returns {Object.<string,*>} Descriptor
  * @abstract
  */
-ReflectionObject.prototype.toJSON = /* istanbul ignore next */ function toJSON() {
-    throw Error(); // not implemented, shouldn't happen
-};
+// ReflectionObject.prototype.toJSON = /* istanbul ignore next */ function toJSON() {
+//     throw Error(); // not implemented, shouldn't happen
+// };
 
 /**
  * Called when this object is added to a parent.
@@ -125,13 +125,13 @@ ReflectionObject.prototype.onAdd = function onAdd(parent) {
  * @param {ReflectionObject} parent Parent removed from
  * @returns {undefined}
  */
-ReflectionObject.prototype.onRemove = function onRemove(parent) {
-    var root = parent.root;
-    if (root instanceof Root)
-        root._handleRemove(this);
-    this.parent = null;
-    this.resolved = false;
-};
+// ReflectionObject.prototype.onRemove = function onRemove(parent) {
+//     var root = parent.root;
+//     if (root instanceof Root)
+//         root._handleRemove(this);
+//     this.parent = null;
+//     this.resolved = false;
+// };
 
 /**
  * Resolves this objects type references.
@@ -163,11 +163,11 @@ ReflectionObject.prototype.getOption = function getOption(name) {
  * @param {boolean} [ifNotSet] Sets the option only if it isn't currently set
  * @returns {ReflectionObject} `this`
  */
-ReflectionObject.prototype.setOption = function setOption(name, value, ifNotSet) {
-    if (!ifNotSet || !this.options || this.options[name] === undefined)
-        (this.options || (this.options = {}))[name] = value;
-    return this;
-};
+// ReflectionObject.prototype.setOption = function setOption(name, value, ifNotSet) {
+//     if (!ifNotSet || !this.options || this.options[name] === undefined)
+//         (this.options || (this.options = {}))[name] = value;
+//     return this;
+// };
 
 /**
  * Sets multiple options.
@@ -175,24 +175,24 @@ ReflectionObject.prototype.setOption = function setOption(name, value, ifNotSet)
  * @param {boolean} [ifNotSet] Sets an option only if it isn't currently set
  * @returns {ReflectionObject} `this`
  */
-ReflectionObject.prototype.setOptions = function setOptions(options, ifNotSet) {
-    if (options)
-        for (var keys = Object.keys(options), i = 0; i < keys.length; ++i)
-            this.setOption(keys[i], options[keys[i]], ifNotSet);
-    return this;
-};
+// ReflectionObject.prototype.setOptions = function setOptions(options, ifNotSet) {
+//     if (options)
+//         for (var keys = Object.keys(options), i = 0; i < keys.length; ++i)
+//             this.setOption(keys[i], options[keys[i]], ifNotSet);
+//     return this;
+// };
 
 /**
  * Converts this instance to its string representation.
  * @returns {string} Class name[, space, full name]
  */
-ReflectionObject.prototype.toString = function toString() {
-    var className = this.constructor.className,
-        fullName  = this.fullName;
-    if (fullName.length)
-        return className + " " + fullName;
-    return className;
-};
+// ReflectionObject.prototype.toString = function toString() {
+//     var className = this.constructor.className,
+//         fullName  = this.fullName;
+//     if (fullName.length)
+//         return className + " " + fullName;
+//     return className;
+// };
 
 // Sets up cyclic dependencies (called in index-light)
 ReflectionObject._configure = function(Root_) {

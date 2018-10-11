@@ -2,13 +2,13 @@
 var util = exports;
 
 // used to return a Promise where callback is omitted
-util.asPromise = require("@protobufjs/aspromise");
+// util.asPromise = require("@protobufjs/aspromise");
 
 // converts to / from base64 encoded strings
-util.base64 = require("@protobufjs/base64");
+// util.base64 = require("@protobufjs/base64");
 
 // base class of rpc.Service
-util.EventEmitter = require("@protobufjs/eventemitter");
+// util.EventEmitter = require("@protobufjs/eventemitter");
 
 // float handling accross browsers
 util.float = require("@protobufjs/float");
@@ -20,10 +20,10 @@ util.inquire = require("@protobufjs/inquire");
 util.utf8 = require("@protobufjs/utf8");
 
 // provides a node-like buffer pool in the browser
-util.pool = require("@protobufjs/pool");
+// util.pool = require("@protobufjs/pool");
 
 // utility to work with the low and high bits of a 64 bit value
-util.LongBits = require("./longbits");
+// util.LongBits = require("./longbits");
 
 // global object reference
 util.global = typeof window !== "undefined" && window
@@ -90,20 +90,20 @@ util.isObject = function isObject(value) {
  * @param {string} prop Property name
  * @returns {boolean} `true` if considered to be present, otherwise `false`
  */
-util.isset =
+// util.isset =
 
-/**
- * Checks if a property on a message is considered to be present.
- * @param {Object} obj Plain object or message instance
- * @param {string} prop Property name
- * @returns {boolean} `true` if considered to be present, otherwise `false`
- */
-util.isSet = function isSet(obj, prop) {
-    var value = obj[prop];
-    if (value != null && obj.hasOwnProperty(prop)) // eslint-disable-line eqeqeq, no-prototype-builtins
-        return typeof value !== "object" || (Array.isArray(value) ? value.length : Object.keys(value).length) > 0;
-    return false;
-};
+// /**
+//  * Checks if a property on a message is considered to be present.
+//  * @param {Object} obj Plain object or message instance
+//  * @param {string} prop Property name
+//  * @returns {boolean} `true` if considered to be present, otherwise `false`
+//  */
+// util.isSet = function isSet(obj, prop) {
+//     var value = obj[prop];
+//     if (value != null && obj.hasOwnProperty(prop)) // eslint-disable-line eqeqeq, no-prototype-builtins
+//         return typeof value !== "object" || (Array.isArray(value) ? value.length : Object.keys(value).length) > 0;
+//     return false;
+// };
 
 /**
  * Any compatible Buffer instance.
@@ -170,9 +170,9 @@ util.Array = typeof Uint8Array !== "undefined" ? Uint8Array /* istanbul ignore n
  * Long.js's Long class if available.
  * @type {Constructor<Long>}
  */
-util.Long = /* istanbul ignore next */ util.global.dcodeIO && /* istanbul ignore next */ util.global.dcodeIO.Long
-         || /* istanbul ignore next */ util.global.Long
-         || util.inquire("long");
+// util.Long = /* istanbul ignore next */ util.global.dcodeIO && /* istanbul ignore next */ util.global.dcodeIO.Long
+//          || /* istanbul ignore next */ util.global.Long
+//          || util.inquire("long");
 
 /**
  * Regular expression used to verify 2 bit (`bool`) map keys.
@@ -200,11 +200,11 @@ util.key64Re = /^(?:[\\x00-\\xff]{8}|-?(?:0|[1-9][0-9]*))$/;
  * @param {Long|number} value Value to convert
  * @returns {string} Hash
  */
-util.longToHash = function longToHash(value) {
-    return value
-        ? util.LongBits.from(value).toHash()
-        : util.LongBits.zeroHash;
-};
+// util.longToHash = function longToHash(value) {
+//     return value
+//         ? util.LongBits.from(value).toHash()
+//         : util.LongBits.zeroHash;
+// };
 
 /**
  * Converts an 8 characters long hash string to a long or number.
@@ -212,12 +212,12 @@ util.longToHash = function longToHash(value) {
  * @param {boolean} [unsigned=false] Whether unsigned or not
  * @returns {Long|number} Original value
  */
-util.longFromHash = function longFromHash(hash, unsigned) {
-    var bits = util.LongBits.fromHash(hash);
-    if (util.Long)
-        return util.Long.fromBits(bits.lo, bits.hi, unsigned);
-    return bits.toNumber(Boolean(unsigned));
-};
+// util.longFromHash = function longFromHash(hash, unsigned) {
+//     var bits = util.LongBits.fromHash(hash);
+//     if (util.Long)
+//         return util.Long.fromBits(bits.lo, bits.hi, unsigned);
+//     return bits.toNumber(Boolean(unsigned));
+// };
 
 /**
  * Merges the properties of the source object into the destination object.
@@ -227,23 +227,23 @@ util.longFromHash = function longFromHash(hash, unsigned) {
  * @param {boolean} [ifNotSet=false] Merges only if the key is not already set
  * @returns {Object.<string,*>} Destination object
  */
-function merge(dst, src, ifNotSet) { // used by converters
-    for (var keys = Object.keys(src), i = 0; i < keys.length; ++i)
-        if (dst[keys[i]] === undefined || !ifNotSet)
-            dst[keys[i]] = src[keys[i]];
-    return dst;
-}
+// function merge(dst, src, ifNotSet) { // used by converters
+//     for (var keys = Object.keys(src), i = 0; i < keys.length; ++i)
+//         if (dst[keys[i]] === undefined || !ifNotSet)
+//             dst[keys[i]] = src[keys[i]];
+//     return dst;
+// }
 
-util.merge = merge;
+// util.merge = merge;
 
 /**
  * Converts the first character of a string to lower case.
  * @param {string} str String to convert
  * @returns {string} Converted string
  */
-util.lcFirst = function lcFirst(str) {
-    return str.charAt(0).toLowerCase() + str.substring(1);
-};
+// util.lcFirst = function lcFirst(str) {
+//     return str.charAt(0).toLowerCase() + str.substring(1);
+// };
 
 /**
  * Creates a custom error constructor.
@@ -251,40 +251,40 @@ util.lcFirst = function lcFirst(str) {
  * @param {string} name Error name
  * @returns {Constructor<Error>} Custom error constructor
  */
-function newError(name) {
+// function newError(name) {
 
-    function CustomError(message, properties) {
+//     function CustomError(message, properties) {
 
-        if (!(this instanceof CustomError))
-            return new CustomError(message, properties);
+//         if (!(this instanceof CustomError))
+//             return new CustomError(message, properties);
 
-        // Error.call(this, message);
-        // ^ just returns a new error instance because the ctor can be called as a function
+//         // Error.call(this, message);
+//         // ^ just returns a new error instance because the ctor can be called as a function
 
-        Object.defineProperty(this, "message", { get: function() { return message; } });
+//         Object.defineProperty(this, "message", { get: function() { return message; } });
 
-        /* istanbul ignore next */
-        if (Error.captureStackTrace) // node
-            Error.captureStackTrace(this, CustomError);
-        else
-            Object.defineProperty(this, "stack", { value: (new Error()).stack || "" });
+//         /* istanbul ignore next */
+//         if (Error.captureStackTrace) // node
+//             Error.captureStackTrace(this, CustomError);
+//         else
+//             Object.defineProperty(this, "stack", { value: (new Error()).stack || "" });
 
-        if (properties)
-            merge(this, properties);
-    }
+//         if (properties)
+//             merge(this, properties);
+//     }
 
-    (CustomError.prototype = Object.create(Error.prototype)).constructor = CustomError;
+//     (CustomError.prototype = Object.create(Error.prototype)).constructor = CustomError;
 
-    Object.defineProperty(CustomError.prototype, "name", { get: function() { return name; } });
+//     Object.defineProperty(CustomError.prototype, "name", { get: function() { return name; } });
 
-    CustomError.prototype.toString = function toString() {
-        return this.name + ": " + this.message;
-    };
+//     CustomError.prototype.toString = function toString() {
+//         return this.name + ": " + this.message;
+//     };
 
-    return CustomError;
-}
+//     return CustomError;
+// }
 
-util.newError = newError;
+// util.newError = newError;
 
 /**
  * Constructs a new protocol error.
@@ -303,7 +303,7 @@ util.newError = newError;
  *         console.log("decoded so far: " + JSON.stringify(e.instance));
  * }
  */
-util.ProtocolError = newError("ProtocolError");
+// util.ProtocolError = newError("ProtocolError");
 
 /**
  * So far decoded message instance.
@@ -323,22 +323,22 @@ util.ProtocolError = newError("ProtocolError");
  * @param {string[]} fieldNames Field names
  * @returns {OneOfGetter} Unbound getter
  */
-util.oneOfGetter = function getOneOf(fieldNames) {
-    var fieldMap = {};
-    for (var i = 0; i < fieldNames.length; ++i)
-        fieldMap[fieldNames[i]] = 1;
+// util.oneOfGetter = function getOneOf(fieldNames) {
+//     var fieldMap = {};
+//     for (var i = 0; i < fieldNames.length; ++i)
+//         fieldMap[fieldNames[i]] = 1;
 
-    /**
-     * @returns {string|undefined} Set field name, if any
-     * @this Object
-     * @ignore
-     */
-    return function() { // eslint-disable-line consistent-return
-        for (var keys = Object.keys(this), i = keys.length - 1; i > -1; --i)
-            if (fieldMap[keys[i]] === 1 && this[keys[i]] !== undefined && this[keys[i]] !== null)
-                return keys[i];
-    };
-};
+//     /**
+//      * @returns {string|undefined} Set field name, if any
+//      * @this Object
+//      * @ignore
+//      */
+//     return function() { // eslint-disable-line consistent-return
+//         for (var keys = Object.keys(this), i = keys.length - 1; i > -1; --i)
+//             if (fieldMap[keys[i]] === 1 && this[keys[i]] !== undefined && this[keys[i]] !== null)
+//                 return keys[i];
+//     };
+// };
 
 /**
  * A OneOf setter as returned by {@link util.oneOfSetter}.
@@ -353,20 +353,20 @@ util.oneOfGetter = function getOneOf(fieldNames) {
  * @param {string[]} fieldNames Field names
  * @returns {OneOfSetter} Unbound setter
  */
-util.oneOfSetter = function setOneOf(fieldNames) {
+// util.oneOfSetter = function setOneOf(fieldNames) {
 
-    /**
-     * @param {string} name Field name
-     * @returns {undefined}
-     * @this Object
-     * @ignore
-     */
-    return function(name) {
-        for (var i = 0; i < fieldNames.length; ++i)
-            if (fieldNames[i] !== name)
-                delete this[fieldNames[i]];
-    };
-};
+//     /**
+//      * @param {string} name Field name
+//      * @returns {undefined}
+//      * @this Object
+//      * @ignore
+//      */
+//     return function(name) {
+//         for (var i = 0; i < fieldNames.length; ++i)
+//             if (fieldNames[i] !== name)
+//                 delete this[fieldNames[i]];
+//     };
+// };
 
 /**
  * Default conversion options used for {@link Message#toJSON} implementations.
@@ -384,12 +384,12 @@ util.oneOfSetter = function setOneOf(fieldNames) {
  * @type {IConversionOptions}
  * @see https://developers.google.com/protocol-buffers/docs/proto3?hl=en#json
  */
-util.toJSONOptions = {
-    longs: String,
-    enums: String,
-    bytes: String,
-    json: true
-};
+// util.toJSONOptions = {
+//     longs: String,
+//     enums: String,
+//     bytes: String,
+//     json: true
+// };
 
 // Sets up buffer utility according to the environment (called in index-minimal)
 util._configure = function() {
