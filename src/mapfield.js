@@ -73,31 +73,31 @@ MapField.fromJSON = function fromJSON(name, json) {
  * @param {IToJSONOptions} [toJSONOptions] JSON conversion options
  * @returns {IMapField} Map field descriptor
  */
-MapField.prototype.toJSON = function toJSON(toJSONOptions) {
-    var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
-    return util.toObject([
-        "keyType" , this.keyType,
-        "type"    , this.type,
-        "id"      , this.id,
-        "extend"  , this.extend,
-        "options" , this.options,
-        "comment" , keepComments ? this.comment : undefined
-    ]);
-};
+// MapField.prototype.toJSON = function toJSON(toJSONOptions) {
+//     var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
+//     return util.toObject([
+//         "keyType" , this.keyType,
+//         "type"    , this.type,
+//         "id"      , this.id,
+//         "extend"  , this.extend,
+//         "options" , this.options,
+//         "comment" , keepComments ? this.comment : undefined
+//     ]);
+// };
 
 /**
  * @override
  */
-MapField.prototype.resolve = function resolve() {
-    if (this.resolved)
-        return this;
+// MapField.prototype.resolve = function resolve() {
+//     if (this.resolved)
+//         return this;
 
-    // Besides a value type, map fields have a key type that may be "any scalar type except for floating point types and bytes"
-    if (types.mapKey[this.keyType] === undefined)
-        throw Error("invalid key type: " + this.keyType);
+//     // Besides a value type, map fields have a key type that may be "any scalar type except for floating point types and bytes"
+//     if (types.mapKey[this.keyType] === undefined)
+//         throw Error("invalid key type: " + this.keyType);
 
-    return Field.prototype.resolve.call(this);
-};
+//     return Field.prototype.resolve.call(this);
+// };
 
 /**
  * Map field decorator (TypeScript).
@@ -109,18 +109,18 @@ MapField.prototype.resolve = function resolve() {
  * @returns {FieldDecorator} Decorator function
  * @template T extends { [key: string]: number | Long | string | boolean | Uint8Array | Buffer | number[] | Message<{}> }
  */
-MapField.d = function decorateMapField(fieldId, fieldKeyType, fieldValueType) {
+// MapField.d = function decorateMapField(fieldId, fieldKeyType, fieldValueType) {
 
-    // submessage value: decorate the submessage and use its name as the type
-    if (typeof fieldValueType === "function")
-        fieldValueType = util.decorateType(fieldValueType).name;
+//     // submessage value: decorate the submessage and use its name as the type
+//     if (typeof fieldValueType === "function")
+//         fieldValueType = util.decorateType(fieldValueType).name;
 
-    // enum reference value: create a reflected copy of the enum and keep reuseing it
-    else if (fieldValueType && typeof fieldValueType === "object")
-        fieldValueType = util.decorateEnum(fieldValueType).name;
+//     // enum reference value: create a reflected copy of the enum and keep reuseing it
+//     else if (fieldValueType && typeof fieldValueType === "object")
+//         fieldValueType = util.decorateEnum(fieldValueType).name;
 
-    return function mapFieldDecorator(prototype, fieldName) {
-        util.decorateType(prototype.constructor)
-            .add(new MapField(fieldName, fieldId, fieldKeyType, fieldValueType));
-    };
-};
+//     return function mapFieldDecorator(prototype, fieldName) {
+//         util.decorateType(prototype.constructor)
+//             .add(new MapField(fieldName, fieldId, fieldKeyType, fieldValueType));
+//     };
+// };

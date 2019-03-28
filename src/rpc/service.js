@@ -76,67 +76,67 @@ function Service(rpcImpl, requestDelimited, responseDelimited) {
  * @template TReq extends Message<TReq>
  * @template TRes extends Message<TRes>
  */
-Service.prototype.rpcCall = function rpcCall(method, requestCtor, responseCtor, request, callback) {
+// Service.prototype.rpcCall = function rpcCall(method, requestCtor, responseCtor, request, callback) {
 
-    if (!request)
-        throw TypeError("request must be specified");
+//     if (!request)
+//         throw TypeError("request must be specified");
 
-    var self = this;
-    if (!callback)
-        return util.asPromise(rpcCall, self, method, requestCtor, responseCtor, request);
+//     var self = this;
+//     if (!callback)
+//         return util.asPromise(rpcCall, self, method, requestCtor, responseCtor, request);
 
-    if (!self.rpcImpl) {
-        setTimeout(function() { callback(Error("already ended")); }, 0);
-        return undefined;
-    }
+//     if (!self.rpcImpl) {
+//         setTimeout(function() { callback(Error("already ended")); }, 0);
+//         return undefined;
+//     }
 
-    try {
-        return self.rpcImpl(
-            method,
-            requestCtor[self.requestDelimited ? "encodeDelimited" : "encode"](request).finish(),
-            function rpcCallback(err, response) {
+//     try {
+//         return self.rpcImpl(
+//             method,
+//             requestCtor[self.requestDelimited ? "encodeDelimited" : "encode"](request).finish(),
+//             function rpcCallback(err, response) {
 
-                if (err) {
-                    self.emit("error", err, method);
-                    return callback(err);
-                }
+//                 if (err) {
+//                     self.emit("error", err, method);
+//                     return callback(err);
+//                 }
 
-                if (response === null) {
-                    self.end(/* endedByRPC */ true);
-                    return undefined;
-                }
+//                 if (response === null) {
+//                     self.end(/* endedByRPC */ true);
+//                     return undefined;
+//                 }
 
-                if (!(response instanceof responseCtor)) {
-                    try {
-                        response = responseCtor[self.responseDelimited ? "decodeDelimited" : "decode"](response);
-                    } catch (err) {
-                        self.emit("error", err, method);
-                        return callback(err);
-                    }
-                }
+//                 if (!(response instanceof responseCtor)) {
+//                     try {
+//                         response = responseCtor[self.responseDelimited ? "decodeDelimited" : "decode"](response);
+//                     } catch (err) {
+//                         self.emit("error", err, method);
+//                         return callback(err);
+//                     }
+//                 }
 
-                self.emit("data", response, method);
-                return callback(null, response);
-            }
-        );
-    } catch (err) {
-        self.emit("error", err, method);
-        setTimeout(function() { callback(err); }, 0);
-        return undefined;
-    }
-};
+//                 self.emit("data", response, method);
+//                 return callback(null, response);
+//             }
+//         );
+//     } catch (err) {
+//         self.emit("error", err, method);
+//         setTimeout(function() { callback(err); }, 0);
+//         return undefined;
+//     }
+// };
 
 /**
  * Ends this service and emits the `end` event.
  * @param {boolean} [endedByRPC=false] Whether the service has been ended by the RPC implementation.
  * @returns {rpc.Service} `this`
  */
-Service.prototype.end = function end(endedByRPC) {
-    if (this.rpcImpl) {
-        if (!endedByRPC) // signal end to rpcImpl
-            this.rpcImpl(null, null, null);
-        this.rpcImpl = null;
-        this.emit("end").off();
-    }
-    return this;
-};
+// Service.prototype.end = function end(endedByRPC) {
+//     if (this.rpcImpl) {
+//         if (!endedByRPC) // signal end to rpcImpl
+//             this.rpcImpl(null, null, null);
+//         this.rpcImpl = null;
+//         this.emit("end").off();
+//     }
+//     return this;
+// };

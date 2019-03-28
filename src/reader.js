@@ -116,58 +116,58 @@ Reader.prototype.sint32 = function read_sint32() {
 
 /* eslint-disable no-invalid-this */
 
-function readLongVarint() {
-    // tends to deopt with local vars for octet etc.
-    var bits = new LongBits(0, 0);
-    var i = 0;
-    if (this.len - this.pos > 4) { // fast route (lo)
-        for (; i < 4; ++i) {
-            // 1st..4th
-            bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
-            if (this.buf[this.pos++] < 128)
-                return bits;
-        }
-        // 5th
-        bits.lo = (bits.lo | (this.buf[this.pos] & 127) << 28) >>> 0;
-        bits.hi = (bits.hi | (this.buf[this.pos] & 127) >>  4) >>> 0;
-        if (this.buf[this.pos++] < 128)
-            return bits;
-        i = 0;
-    } else {
-        for (; i < 3; ++i) {
-            /* istanbul ignore if */
-            if (this.pos >= this.len)
-                throw indexOutOfRange(this);
-            // 1st..3th
-            bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
-            if (this.buf[this.pos++] < 128)
-                return bits;
-        }
-        // 4th
-        bits.lo = (bits.lo | (this.buf[this.pos++] & 127) << i * 7) >>> 0;
-        return bits;
-    }
-    if (this.len - this.pos > 4) { // fast route (hi)
-        for (; i < 5; ++i) {
-            // 6th..10th
-            bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
-            if (this.buf[this.pos++] < 128)
-                return bits;
-        }
-    } else {
-        for (; i < 5; ++i) {
-            /* istanbul ignore if */
-            if (this.pos >= this.len)
-                throw indexOutOfRange(this);
-            // 6th..10th
-            bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
-            if (this.buf[this.pos++] < 128)
-                return bits;
-        }
-    }
-    /* istanbul ignore next */
-    throw Error("invalid varint encoding");
-}
+// function readLongVarint() {
+//     // tends to deopt with local vars for octet etc.
+//     var bits = new LongBits(0, 0);
+//     var i = 0;
+//     if (this.len - this.pos > 4) { // fast route (lo)
+//         for (; i < 4; ++i) {
+//             // 1st..4th
+//             bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+//             if (this.buf[this.pos++] < 128)
+//                 return bits;
+//         }
+//         // 5th
+//         bits.lo = (bits.lo | (this.buf[this.pos] & 127) << 28) >>> 0;
+//         bits.hi = (bits.hi | (this.buf[this.pos] & 127) >>  4) >>> 0;
+//         if (this.buf[this.pos++] < 128)
+//             return bits;
+//         i = 0;
+//     } else {
+//         for (; i < 3; ++i) {
+//             /* istanbul ignore if */
+//             if (this.pos >= this.len)
+//                 throw indexOutOfRange(this);
+//             // 1st..3th
+//             bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+//             if (this.buf[this.pos++] < 128)
+//                 return bits;
+//         }
+//         // 4th
+//         bits.lo = (bits.lo | (this.buf[this.pos++] & 127) << i * 7) >>> 0;
+//         return bits;
+//     }
+//     if (this.len - this.pos > 4) { // fast route (hi)
+//         for (; i < 5; ++i) {
+//             // 6th..10th
+//             bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+//             if (this.buf[this.pos++] < 128)
+//                 return bits;
+//         }
+//     } else {
+//         for (; i < 5; ++i) {
+//             /* istanbul ignore if */
+//             if (this.pos >= this.len)
+//                 throw indexOutOfRange(this);
+//             // 6th..10th
+//             bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+//             if (this.buf[this.pos++] < 128)
+//                 return bits;
+//         }
+//     }
+//     /* istanbul ignore next */
+//     throw Error("invalid varint encoding");
+// }
 
 /* eslint-enable no-invalid-this */
 
@@ -375,31 +375,31 @@ Reader.prototype.skipType = function(wireType) {
     return this;
 };
 
-Reader._configure = function(BufferReader_) {
-    BufferReader = BufferReader_;
+// Reader._configure = function(BufferReader_) {
+//     BufferReader = BufferReader_;
 
-    var fn = util.Long ? "toLong" : /* istanbul ignore next */ "toNumber";
-    util.merge(Reader.prototype, {
+//     var fn = util.Long ? "toLong" : /* istanbul ignore next */ "toNumber";
+//     util.merge(Reader.prototype, {
 
-        int64: function read_int64() {
-            return readLongVarint.call(this)[fn](false);
-        },
+//         int64: function read_int64() {
+//             return readLongVarint.call(this)[fn](false);
+//         },
 
-        uint64: function read_uint64() {
-            return readLongVarint.call(this)[fn](true);
-        },
+//         uint64: function read_uint64() {
+//             return readLongVarint.call(this)[fn](true);
+//         },
 
-        sint64: function read_sint64() {
-            return readLongVarint.call(this).zzDecode()[fn](false);
-        },
+//         sint64: function read_sint64() {
+//             return readLongVarint.call(this).zzDecode()[fn](false);
+//         },
 
-        fixed64: function read_fixed64() {
-            return readFixed64.call(this)[fn](true);
-        },
+//         fixed64: function read_fixed64() {
+//             return readFixed64.call(this)[fn](true);
+//         },
 
-        sfixed64: function read_sfixed64() {
-            return readFixed64.call(this)[fn](false);
-        }
+//         sfixed64: function read_sfixed64() {
+//             return readFixed64.call(this)[fn](false);
+//         }
 
-    });
-};
+//     });
+// };

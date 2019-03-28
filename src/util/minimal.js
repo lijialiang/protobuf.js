@@ -14,7 +14,7 @@ var util = exports;
 util.float = require("@protobufjs/float");
 
 // requires modules optionally and hides the call from bundlers
-util.inquire = require("@protobufjs/inquire");
+// util.inquire = require("@protobufjs/inquire");
 
 // converts to / from utf8 encoded strings
 util.utf8 = require("@protobufjs/utf8");
@@ -26,10 +26,10 @@ util.utf8 = require("@protobufjs/utf8");
 // util.LongBits = require("./longbits");
 
 // global object reference
-util.global = typeof window !== "undefined" && window
-           || typeof global !== "undefined" && global
-           || typeof self   !== "undefined" && self
-           || this; // eslint-disable-line no-invalid-this
+// util.global = typeof window !== "undefined" && window
+//            || typeof global !== "undefined" && global
+//            || typeof self   !== "undefined" && self
+//            || this; // eslint-disable-line no-invalid-this
 
 /**
  * An immuable empty array.
@@ -52,7 +52,7 @@ util.emptyObject = Object.freeze ? Object.freeze({}) : /* istanbul ignore next *
  * @type {boolean}
  * @const
  */
-util.isNode = Boolean(util.global.process && util.global.process.versions && util.global.process.versions.node);
+// util.isNode = Boolean(util.global.process && util.global.process.versions && util.global.process.versions.node);
 
 /**
  * Tests if the specified value is an integer.
@@ -116,40 +116,40 @@ util.isObject = function isObject(value) {
  * Node's Buffer class if available.
  * @type {Constructor<Buffer>}
  */
-util.Buffer = (function() {
-    try {
-        var Buffer = util.inquire("buffer").Buffer;
-        // refuse to use non-node buffers if not explicitly assigned (perf reasons):
-        return Buffer.prototype.utf8Write ? Buffer : /* istanbul ignore next */ null;
-    } catch (e) {
-        /* istanbul ignore next */
-        return null;
-    }
-})();
+// util.Buffer = (function() {
+//     try {
+//         var Buffer = util.inquire("buffer").Buffer;
+//         // refuse to use non-node buffers if not explicitly assigned (perf reasons):
+//         return Buffer.prototype.utf8Write ? Buffer : /* istanbul ignore next */ null;
+//     } catch (e) {
+//         /* istanbul ignore next */
+//         return null;
+//     }
+// })();
 
 // Internal alias of or polyfull for Buffer.from.
-util._Buffer_from = null;
+// util._Buffer_from = null;
 
 // Internal alias of or polyfill for Buffer.allocUnsafe.
-util._Buffer_allocUnsafe = null;
+// util._Buffer_allocUnsafe = null;
 
 /**
  * Creates a new buffer of whatever type supported by the environment.
  * @param {number|number[]} [sizeOrArray=0] Buffer size or number array
  * @returns {Uint8Array|Buffer} Buffer
  */
-util.newBuffer = function newBuffer(sizeOrArray) {
-    /* istanbul ignore next */
-    return typeof sizeOrArray === "number"
-        ? util.Buffer
-            ? util._Buffer_allocUnsafe(sizeOrArray)
-            : new util.Array(sizeOrArray)
-        : util.Buffer
-            ? util._Buffer_from(sizeOrArray)
-            : typeof Uint8Array === "undefined"
-                ? sizeOrArray
-                : new Uint8Array(sizeOrArray);
-};
+// util.newBuffer = function newBuffer(sizeOrArray) {
+//     /* istanbul ignore next */
+//     return typeof sizeOrArray === "number"
+//         ? util.Buffer
+//             ? util._Buffer_allocUnsafe(sizeOrArray)
+//             : new util.Array(sizeOrArray)
+//         : util.Buffer
+//             ? util._Buffer_from(sizeOrArray)
+//             : typeof Uint8Array === "undefined"
+//                 ? sizeOrArray
+//                 : new Uint8Array(sizeOrArray);
+// };
 
 /**
  * Array implementation used in the browser. `Uint8Array` if supported, otherwise `Array`.
@@ -179,21 +179,21 @@ util.Array = typeof Uint8Array !== "undefined" ? Uint8Array /* istanbul ignore n
  * @type {RegExp}
  * @const
  */
-util.key2Re = /^true|false|0|1$/;
+// util.key2Re = /^true|false|0|1$/;
 
 /**
  * Regular expression used to verify 32 bit (`int32` etc.) map keys.
  * @type {RegExp}
  * @const
  */
-util.key32Re = /^-?(?:0|[1-9][0-9]*)$/;
+// util.key32Re = /^-?(?:0|[1-9][0-9]*)$/;
 
 /**
  * Regular expression used to verify 64 bit (`int64` etc.) map keys.
  * @type {RegExp}
  * @const
  */
-util.key64Re = /^(?:[\\x00-\\xff]{8}|-?(?:0|[1-9][0-9]*))$/;
+// util.key64Re = /^(?:[\\x00-\\xff]{8}|-?(?:0|[1-9][0-9]*))$/;
 
 /**
  * Converts a number or long to an 8 characters long hash string.
